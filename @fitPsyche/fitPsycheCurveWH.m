@@ -22,7 +22,7 @@ end
 % Check range of data
 if min(yData)<0 || max(yData)>1  
      % Normalise data to range 0 to 1
-     yData = (yData-min(yData)) / (max(yDaya)-min(yData));
+     yData = (yData-min(yData)) / (max(yData)-min(yData));
 end
     
 % Prepare fitting function
