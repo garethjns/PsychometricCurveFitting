@@ -42,6 +42,11 @@ classdef fitPsyche
     methods
         function obj = fitPsyche(x, y, type, varargin)
             
+            if ~exist('x','var') && ~exist('x','var')
+               % Create dummy object
+               return
+            end
+            
             obj.x = x;
             obj.y = y;
             obj.type = type;
