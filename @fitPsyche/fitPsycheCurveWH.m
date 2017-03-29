@@ -3,13 +3,12 @@ function [ffit, curve] = ...
 
 % Start points and limits
 useLims = 0;
-if numel(varargin)>1
+if ~isempty(varargin)
     useLims = 1;
     UL = varargin{1}(1,:);
     SP = varargin{1}(2,:);
-    LM = varargin{1}(3,:);
+    LL = varargin{1}(3,:);
 end
-
 
 % Transpose if necessary
 if size(xAxis,1)<size(xAxis,2)
@@ -32,7 +31,7 @@ F = @(g,l,u,v,x) g+(1-g-l)*0.5*(1+erf((x-u)/sqrt(2*v^2)));
 if useLims==1
     % SPs and limits specified, use while fitting
     ffit = ...
-        fit(xAxis, yData, F, 'StartPoint', SP, 'Upper', UL, 'Lower', LM);
+        fit(xAxis, yData, F, 'StartPoint', SP, 'Upper', UL, 'Lower', LL);
 else
     % Fits not specified, don't use while fitting
     ffit = fit(xAxis,yData, F);

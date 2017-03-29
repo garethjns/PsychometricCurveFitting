@@ -42,7 +42,7 @@ classdef fitPsyche
     methods
         function obj = fitPsyche(x, y, type, varargin)
             
-            if ~exist('x','var') && ~exist('x','var')
+            if ~exist('x','var') && ~exist('y','var')
                % Create dummy object
                return
             end
@@ -70,9 +70,9 @@ classdef fitPsyche
         end
         
         function h = plotPsyche(obj)
-            h = plot(obj.curve(:,1), obj.curve(:,2));
+            h = scatter(obj.x, obj.y);
             hold on
-            scatter(obj.x, obj.y)
+            h = plot(obj.curve(:,1), obj.curve(:,2), 'color', h.CData);
         end
         
     end

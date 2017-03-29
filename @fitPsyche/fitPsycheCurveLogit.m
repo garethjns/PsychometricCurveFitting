@@ -13,7 +13,6 @@ if numel(varargin)==2
     targets = varargin{2};
 end
 
-
 % Transpose if necessary
 if size(xAxis,1)<size(xAxis,2)
     xAxis = xAxis';

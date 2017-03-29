@@ -79,3 +79,30 @@ hold on
 plotPsyche(ffit2)
 legend({'y1', 'y2', 'y1 fit', 'y2 fit'}, 'Location', 'NorthWest')
 title('WH 2001 fit')
+
+disp(ffit1.model)
+disp(ffit2.model)
+
+
+%% Set limits for WH fit
+
+% g (guess rate), l (lapse), u (mean, bias), v (varience, discrimination
+% thresh)
+% UpperLimits:
+UL = [0.05, 0.05, 1, 1]; % Limit upper bound of g and l to 5%
+% StartPoints:
+SP = [0, 0, 0.5, 0.5];
+% LowerLimits:
+LL = [0.05, 0.05, 0, 0];
+
+ffit1 = fitPsyche(x, y2, 'WH', [UL;SP;LL]);
+ffit2 = fitPsyche(x, y2, 'WH');
+figure
+plotPsyche(ffit1)
+hold on
+plotPsyche(ffit2)
+legend({'y2', 'y2 limited fit', 'y2', 'y2 fit'}, 'Location', 'NorthWest')
+title('WH 2001 fit')
+
+disp(ffit1.model)
+disp(ffit2.model)
