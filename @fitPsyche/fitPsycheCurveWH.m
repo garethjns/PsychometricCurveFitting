@@ -33,8 +33,8 @@ if useLims==1
     ffit = ...
         fit(xAxis, yData, F, 'StartPoint', SP, 'Upper', UL, 'Lower', LL);
 else
-    % Fits not specified, don't use while fitting
-    ffit = fit(xAxis,yData, F);
+    % Lims not specified, don't use while fitting
+    ffit = fit(xAxis, yData, F);
 end
 
 % Create a new xAxis with higher resolution
