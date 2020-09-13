@@ -1,4 +1,5 @@
 # Psychometric curve fitting
+![Tests](https://github.com/garethjns/PsychometricCurveFitting/workflows/Tests/badge.svg) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=garethjns_PsychometricCurveFitting&metric=alert_status)](https://sonarcloud.io/dashboard?id=garethjns_PsychometricCurveFitting)
 
 Fitting for Psychometric curves in Python and Matlab. Supports:
   - [Simple logit link function (mean and varience parameters)](https://en.wikipedia.org/wiki/Psychometric_function).
