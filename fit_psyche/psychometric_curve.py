@@ -21,7 +21,7 @@ class PsychometricCurve(BaseEstimator, RegressorMixin):
     _fit_func: Callable
 
     def __init__(self, model: str = 'wh', mean_lims=(0, 20), var_lims=(0.1, 5),
-                 guess_rate_lims=(0.01, 0.05), lapse_rate_lims=(0.01, 0.05)):
+                 guess_rate_lims=(0.01, 0.05), lapse_rate_lims=(0.01, 0.05)) -> None:
 
         self.coefs_ = None
 
@@ -31,7 +31,7 @@ class PsychometricCurve(BaseEstimator, RegressorMixin):
                         guess_rate_lims=guess_rate_lims,
                         lapse_rate_lims=lapse_rate_lims)
 
-    def set_params(self, *args, **kwargs):
+    def set_params(self, *args, **kwargs) -> "PsychometricCurve":
         super().set_params(*args, **kwargs)
         if self.model.lower() == 'wh':
             self._fit_func = wh2001
@@ -40,7 +40,7 @@ class PsychometricCurve(BaseEstimator, RegressorMixin):
 
         return self
 
-    def fit(self, x: np.array, y: np.array):
+    def fit(self, x: np.array, y: np.array) -> "PsychometricCurve":
         if self.model.lower() == 'wh':
             lims = [self.mean_lims, self.var_lims, self.guess_rate_lims, self.lapse_rate_lims]
             bounds = ([self.mean_lims[0], self.var_lims[0], self.guess_rate_lims[0], self.lapse_rate_lims[0]],
@@ -61,7 +61,7 @@ class PsychometricCurve(BaseEstimator, RegressorMixin):
     def predict(self, x: np.array) -> np.ndarray:
         return self._fit_func(x, **self.coefs_)
 
-    def plot(self, x: np.array, y: np.ndarray = None, show: bool = True):
+    def plot(self, x: np.array, y: np.ndarray = None, show: bool = True) -> None:
         fig, ax = plt.subplots()
 
         ax.plot(x, self.predict(x), label='y_pred')
