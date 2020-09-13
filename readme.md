@@ -1,13 +1,35 @@
 # Psychometric curve fitting
 
-Two functions to fit psychometric curves:
+Fitting for Psychometric curves in Python and Matlab. Supports:
+  - [Simple logit link function (mean and varience parameters)](https://en.wikipedia.org/wiki/Psychometric_function).
+  - [Wichmann and Hill 2001](http://wexler.free.fr/library/files/wichmann%20(2001)%20the%20psychometric%20function.%20i.%20fitting,%20sampling,%20and%20goodness%20of%20fit.pdf). This curve adds two additional parameters, "guess" and "lapse", which control somewhat for subject fallibility, improving the estimate of the discrimination threshold.
 
-**fitPsycheCurveLogit** - uses glmfit to fit a binomial distribution with a logit link function.  
-**fitPsychCurveWH** - uses fit to fit a psychometric curve based on [Wichmann and Hill 2001](http://wexler.free.fr/library/files/wichmann%20(2001)%20the%20psychometric%20function.%20i.%20fitting,%20sampling,%20and%20goodness%20of%20fit.pdf). This curve includes two additional parameters, "guess" and "lapse", which control somewhat for subject fallibility, improving the estimate of the discrimination threshold.
+# Python usage
+````bash
+pip install fit-psyche
+````
 
- 
-# Usage
-Fitting functions can be acessed by creating a PsychFit object, or directly. See also [FitPsycheCurveExamples.m](https://github.com/garethjns/PsychometricCurveFitting/blob/master/FitPyschCurveExamples.m).
+## Using Uses sklearn API.
+````python
+import numpy as np
+
+from fit_psyche.psychometric_curve import PsychometricCurve
+
+x = np.linspace(start=12, stop=16, num=6)
+y = (x > x.mean()).astype(float)
+y[2] = y[2] + np.abs(np.random.rand())
+y[3] = y[3] - np.abs(np.random.rand())
+
+pc = PsychometricCurve().fit(x, y)
+pc.plot(x, y)
+print(pc.score(x, y))
+print(pc.coefs_)
+````
+![Example WH](https://raw.githubusercontent.com/garethjns/PsychometricCurveFitting/master/Images/WHPy.png)
+
+
+# Matlab Usage
+Fitting functions can be accessed by creating a PsychFit object, or directly. See also examples in scripts/.
 
 ```MATLAB
 % Make up some data
@@ -31,7 +53,8 @@ plotPsyche(ffit2)
 legend({'y1', 'y2', 'y1 fit', 'y2 fit'}, 'Location', 'NorthWest')
 title('GLM fit')
 ```
-![Alt text](Images/GLMObj.png?raw=true "Title")
+![Example GLM](https://raw.githubusercontent.com/garethjns/PsychometricCurveFitting/master/Images/GLMObj.png)
+
 
 ### WH2001
 ```MATLAB
@@ -48,13 +71,13 @@ title('WH 2001 fit')
 disp(ffit1.model)
 disp(ffit2.model)
 ```
-![Alt text](Images/WHObj.png?raw=true "Title")
+![Example WH](https://raw.githubusercontent.com/garethjns/PsychometricCurveFitting/master/Images/WHObj.png)
 
 ### WH2001 with limited coefficients
 ```MATLAB
 %% Set limits for WH fit
 
-% g (guess rate), l (lapse), u (mean, bias), v (varience, discrimination
+% g (guess rate), l (lapse), u (mean, bias), v (variance, discrimination
 % thresh)
 % UpperLimits:
 UL = [0.05, 0.05, 1, 1]; % Limit upper bound of g and l to 5%
@@ -75,7 +98,7 @@ title('WH 2001 fit')
 disp(ffit1.model)
 disp(ffit2.model)
 ```
-![Alt text](Images/WHObjLim.png?raw=true "Title")
+![Example WH](https://raw.githubusercontent.com/garethjns/PsychometricCurveFitting/master/Images/WHObjLim.png)
 
 ## Direct method access
 ### GLM
@@ -97,7 +120,7 @@ plot(curve2(:,1),curve2(:,2))
 legend({'y1', 'y2', 'y1 fit', 'y2 fit'}, 'Location', 'NorthWest')
 title('GLM fit')
 ```
-![Alt text](Images/GLMFit.png?raw=true "Title")
+![Example GLM](https://raw.githubusercontent.com/garethjns/PsychometricCurveFitting/master/Images/GLMFit.png)
 
 ### WH2001
 ```MATLAB
@@ -116,4 +139,4 @@ plot(ffit2)
 legend({'y1', 'y2', 'y1 fit', 'y2 fit'}, 'Location', 'NorthWest')
 title('WH2001 fit')
 ```
-![Alt text](Images/WHDirect.png?raw=true "Title")
+![Example WH](https://raw.githubusercontent.com/garethjns/PsychometricCurveFitting/master/Images/WHDirect.png)
