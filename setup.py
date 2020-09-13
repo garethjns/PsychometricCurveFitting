@@ -2,7 +2,7 @@ import setuptools
 
 from fit_psyche import MAJOR, MINOR, PATCH
 
-with open("README.md", "r") as fh:
+with open("readme.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
