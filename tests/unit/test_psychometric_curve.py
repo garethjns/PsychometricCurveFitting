@@ -12,7 +12,14 @@ class TestPsychometricCurve(unittest.TestCase):
         self._x = np.linspace(start=12, stop=16, num=6)
         self._y = (self._x > self._x.mean()).astype(float)
 
+    def test_invalid_model_raises_error(self):
+        # Act/Assert
+        self.assertRaises(ValueError, lambda: self._sut.set_params(model='invalid'))
+
     def test_wh_fit_with_simple_data(self):
+        # Arrange
+        self._sut.set_params(model='wh')
+
         # Act
         self._sut.fit(self._x, self._y)
 
@@ -25,8 +32,9 @@ class TestPsychometricCurve(unittest.TestCase):
 
     def test_wh_fit_with_noisy_data(self):
         # Arrange
-        self._y[2] = self._y[2] + np.abs(np.random.rand() / 10)
-        self._y[3] = self._y[3] - np.abs(np.random.rand() / 10)
+        self._sut.set_params(model='wh')
+        self._y[2] = self._y[2] + np.abs(np.random.rand() / 8)
+        self._y[3] = self._y[3] - np.abs(np.random.rand() / 8)
 
         # Act
         self._sut.fit(self._x, self._y)
@@ -40,7 +48,7 @@ class TestPsychometricCurve(unittest.TestCase):
 
     def test_logit_fit_with_simple_data(self):
         # Arrange
-        self._sut = PsychometricCurve(model='logit')
+        self._sut.set_params(model='logit')
 
         # Act
         self._sut.fit(self._x, self._y)
@@ -52,7 +60,7 @@ class TestPsychometricCurve(unittest.TestCase):
 
     def test_logit_fit_with_noisy_data(self):
         # Arrange
-        self._sut = PsychometricCurve(model='logit')
+        self._sut.set_params(model='logit')
         self._y[2] = self._y[2] + np.abs(np.random.rand() / 10)
         self._y[3] = self._y[3] - np.abs(np.random.rand() / 10)
 

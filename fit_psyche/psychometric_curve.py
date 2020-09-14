@@ -20,19 +20,58 @@ class PsychometricCurve(BaseEstimator, RegressorMixin):
 
     _fit_func: Callable
 
-    def __init__(self, model: str = 'wh', mean_lims=(0, 20), var_lims=(0.1, 5),
+    def __init__(self, model: str = 'logit', mean_lims=(0, 20), var_lims=(0.001, 20),
                  guess_rate_lims=(0.01, 0.05), lapse_rate_lims=(0.01, 0.05)) -> None:
+        """
+        Fit a Logit or Wichmann and Hill 2001 psychometric curve.
+
+        Model parameters:
+          - Both:
+            - mean (bias): The mean point of the experimental variable where the decision flips (on average).
+                           Describes decision bias.
+            - var / discrimination threshold: The distribution variance. Lower means the decision flips quicker, so is
+                                              "better". Both models are cumulative normal distributions. Greater
+                                              variance = wider distribution = more change in x before decision flips.
+          - wh only
+            - Guess and lapse rates: Model subject fallibility. Essentially allow either end of the fit cumulative
+                                     distribution to anchor to points other than 0 and 1 at each end of the curve
+                                     (respectively). See Wichmann and Hill, 2001.
+
+        For all parameters, starting points are set as a mean of the specified limits.
+
+        :param model: Which model to use, 'logit' or 'wh'. Logit model has two parameters, mean and variance. WH
+                      adds guess and lapse rate. Default 'logit'.
+        :param mean_lims: Limit for the mean parameter. Should be set according to range of independent (x) variable.
+                          For example, if the x variable is set between 10 and 20 units in the experiment, limits within
+                          that range are reasonable. If it's outside something weird is going on!. Specified as
+                          tuple(min, max). Default (0, 20).
+        :param var_lims: Limit for the var parameter. Lower limit should be >0 and upper limit should be set according
+                         to task difficulty. Specified as tuple(min, max). Default (0.001, 100).
+        :param guess_rate_lims: Limit for the guess parameter. Sets anchor point for start of curve and represents
+                                proportion of trails where subject acts randomly. Limits should be set according the
+                                expectations about subject.
+                                For example, it should be higher for humans than a machine learning model... Unless,
+                                it's a machine learning model with stochastic elements like a NN with dropout or
+                                reinforcement learning model that uses Epsilon greedy.
+                                Suggestions:
+                                  - Human (0.01, 0.05) ie. 1-5%
+                                  - Deterministic ML model (0, 1e-6) - the 'logit' model may be more appropriate.
+                                  - Stochastic ML model: Around known epsilon greedy value, or some low value in other
+                                    cases.
+                                Specified as tuple(min, max). Default (0.01, 0.05).
+        :param lapse_rate_lims: Sets the anchor point for the upper end of the curve. See guess_rate_lims.
+        """
 
         self.coefs_ = None
 
-        self.set_params(model=model,
-                        mean_lims=mean_lims,
-                        var_lims=var_lims,
-                        guess_rate_lims=guess_rate_lims,
-                        lapse_rate_lims=lapse_rate_lims)
+        self.set_params(model=model, mean_lims=mean_lims, var_lims=var_lims,
+                        guess_rate_lims=guess_rate_lims, lapse_rate_lims=lapse_rate_lims)
 
     def set_params(self, *args, **kwargs) -> "PsychometricCurve":
         super().set_params(*args, **kwargs)
+        if self.model not in ['logit', 'wh']:
+            raise ValueError(f"Unknown model: {self.model}. Available models: 'logit', 'wh'")
+
         if self.model.lower() == 'wh':
             self._fit_func = wh2001
         else:
@@ -61,7 +100,8 @@ class PsychometricCurve(BaseEstimator, RegressorMixin):
     def predict(self, x: np.array) -> np.ndarray:
         return self._fit_func(x, **self.coefs_)
 
-    def plot(self, x: np.array, y: np.ndarray = None, show: bool = True) -> None:
+    def plot(self, x: np.array, y: np.ndarray = None, show: bool = True,
+             y_label: str = 'Prop.', x_label: str = 'Independent variable') -> None:
         fig, ax = plt.subplots()
 
         ax.plot(x, self.predict(x), label='y_pred')
@@ -70,8 +110,8 @@ class PsychometricCurve(BaseEstimator, RegressorMixin):
             ax.scatter(x, y, label='y')
 
         ax.legend()
-        ax.set_xlabel('N events')
-        ax.set_ylabel('Prop fast')
+        ax.set_xlabel(x_label)
+        ax.set_ylabel(y_label)
         ax.set_title(f"Model: {self.model}")
         fig.tight_layout()
 
@@ -85,5 +125,5 @@ if __name__ == "__main__":
     x = np.linspace(start=8, stop=16, num=16)
     y = (x > x.mean()).astype(float)
 
-    pc = PsychometricCurve(model='wh').fit(x, y)
+    pc = PsychometricCurve(model='wh', guess_rate_lims=(0, 0.2)).fit(x, y)
     pc.plot(x, y)
