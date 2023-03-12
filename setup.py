@@ -1,13 +1,13 @@
 import setuptools
 
-from fit_psyche import MAJOR, MINOR, PATCH
+from fit_psyche import __version__
 
 with open("readme.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="FitPsyche",
-    version=f"{MAJOR}.{MINOR}.{PATCH}",
+    version=__version__,
     author="Gareth Jones",
     author_email="garethgithub@gmail.com",
     description="Psychometric curve fitting package for Python and MATLAB.",

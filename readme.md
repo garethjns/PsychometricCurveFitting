@@ -7,7 +7,7 @@ Fitting for Psychometric curves in Python and Matlab. Supports:
 
 # Python usage
 ````bash
-pip install fit-psyche
+pip install fitpsyche
 ````
 
 ## Using the sklearn API.
