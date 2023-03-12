@@ -14,7 +14,7 @@ class TestPsychometricCurve(unittest.TestCase):
 
     def test_invalid_model_raises_error(self):
         # Act/Assert
-        self.assertRaises(ValueError, lambda: self._sut.set_params(model='invalid'))
+        self.assertRaises(ValueError, lambda: PsychometricCurve(model='invalid'))
 
     def test_wh_fit_with_simple_data(self):
         # Arrange
